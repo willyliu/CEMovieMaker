@@ -23,10 +23,11 @@
 {
     [super viewDidLoad];
     
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    [button setImage:[UIImage imageNamed:@"icon2"] forState:UIControlStateNormal];
-    [button setFrame:CGRectMake(0, 0, self.view.bounds.size.width, 100)];
-    [button.imageView setContentMode:UIViewContentModeScaleAspectFit];
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+	[button setTitle:@"Make And Save Movie" forState:UIControlStateNormal];
+	[button setTitle:@"Make And Save Movie" forState:UIControlStateHighlighted];
+	[button setTitle:@"Make And Save Movie" forState:UIControlStateSelected];
+    [button setFrame:CGRectMake(0, CGRectGetMidY(self.view.bounds) - 50.0 , self.view.bounds.size.width, 100)];
     [button addTarget:self action:@selector(process:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:button];
 }
