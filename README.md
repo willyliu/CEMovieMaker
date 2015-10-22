@@ -28,10 +28,10 @@ Usage:
         [frames addObject:icon3];
     }
 
-    [self.movieMaker createMovieFromImages:[frames copy] withCompletion:^(BOOL success, NSURL *fileURL){
-        if (success) {
-            [self viewMovieAtUrl:fileURL];
-        }
+	NSURL *backgroundAudioFileURL = [[NSBundle mainBundle] URLForResource:@"backgroundMusic" withExtension:@"mov"];
+    [self.movieMaker createMovieFromImages:[frames copy] backgroundAudioFileURL:backgroundAudioFileURL withCompletion:^(NSURL *fileURL){
+		[self saveToCameraRoll:fileURL];
+        [self viewMovieAtUrl:fileURL];
     }];
 }
 
