@@ -24,7 +24,7 @@ typedef void(^CEMovieMakerCompletion)(NSURL *fileURL);
 @property (nonatomic, copy) CEMovieMakerCompletion completionBlock;
 
 - (instancetype)initWithSettings:(NSDictionary *)videoSettings;
-- (void)createMovieFromImages:(NSArray *)images backgroundAudioFileURL:(NSURL *)backgroundAudioFileURL withCompletion:(CEMovieMakerCompletion)completion;
+- (void)createMovieFromPrefixMovieFileURL:(NSURL *)prefixMovieFileURL images:(NSArray *)images backgroundAudioFileURL:(NSURL *)backgroundAudioFileURL withCompletion:(CEMovieMakerCompletion)completion;
 
 + (NSDictionary *)videoSettingsWithCodec:(NSString *)codec withWidth:(CGFloat)width andHeight:(CGFloat)height;
 

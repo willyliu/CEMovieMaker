@@ -20,6 +20,7 @@
 		8B118BA21BD8BEE200898661 /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B118B9D1BD8BEE200898661 /* UIImage+Resize.m */; settings = {ASSET_TAGS = (); }; };
 		8B118BA31BD8BEE200898661 /* UIImage+RoundedCorner.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B118B9F1BD8BEE200898661 /* UIImage+RoundedCorner.m */; settings = {ASSET_TAGS = (); }; };
 		8B118BA81BD8CDA400898661 /* backgroundMusic.mov in Resources */ = {isa = PBXBuildFile; fileRef = 8B118BA71BD8CDA400898661 /* backgroundMusic.mov */; settings = {ASSET_TAGS = (); }; };
+		8B118BAA1BD8E15D00898661 /* prefixMovie.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8B118BA91BD8E15D00898661 /* prefixMovie.mp4 */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +58,7 @@
 		8B118B9E1BD8BEE200898661 /* UIImage+RoundedCorner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+RoundedCorner.h"; path = "UIImageEffects/UIImage+RoundedCorner.h"; sourceTree = "<group>"; };
 		8B118B9F1BD8BEE200898661 /* UIImage+RoundedCorner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+RoundedCorner.m"; path = "UIImageEffects/UIImage+RoundedCorner.m"; sourceTree = "<group>"; };
 		8B118BA71BD8CDA400898661 /* backgroundMusic.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; name = backgroundMusic.mov; path = Resources/backgroundMusic.mov; sourceTree = "<group>"; };
+		8B118BA91BD8E15D00898661 /* prefixMovie.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; name = prefixMovie.mp4; path = Resources/prefixMovie.mp4; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -167,6 +169,7 @@
 			isa = PBXGroup;
 			children = (
 				8B118BA71BD8CDA400898661 /* backgroundMusic.mov */,
+				8B118BA91BD8E15D00898661 /* prefixMovie.mp4 */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -253,6 +256,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				321B3F4119CA08C50077829E /* Main.storyboard in Resources */,
+				8B118BAA1BD8E15D00898661 /* prefixMovie.mp4 in Resources */,
 				8B118BA81BD8CDA400898661 /* backgroundMusic.mov in Resources */,
 				321B3F4619CA08C50077829E /* LaunchScreen.xib in Resources */,
 				321B3F4319CA08C50077829E /* Images.xcassets in Resources */,

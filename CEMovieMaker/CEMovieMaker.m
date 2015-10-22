@@ -53,7 +53,7 @@
     return self;
 }
 
-- (void)createMovieFromImages:(NSArray *)images backgroundAudioFileURL:(NSURL *)backgroundAudioFileURL withCompletion:(CEMovieMakerCompletion)completion
+- (void)createMovieFromPrefixMovieFileURL:(NSURL *)prefixMovieFileURL images:(NSArray *)images backgroundAudioFileURL:(NSURL *)backgroundAudioFileURL withCompletion:(CEMovieMakerCompletion)completion
 {
     self.completionBlock = completion;
     
@@ -91,18 +91,16 @@
         
         [self.writerInput markAsFinished];
         [self.assetWriter finishWritingWithCompletionHandler:^{
-			[self _compileVideoFileURL:self.videoFromImagesFileURL andAudioFileURL:backgroundAudioFileURL toMakeMovieWithCompletion:completion];
+			[self _compilePrefixVideoFileURL:prefixMovieFileURL videoFromImagesFileURL:self.videoFromImagesFileURL andAudioFileURL:backgroundAudioFileURL toMakeMovieWithCompletion:completion];
         }];
         
         CVPixelBufferPoolRelease(self.bufferAdapter.pixelBufferPool);
     }];
 }
 
--(void)_compileVideoFileURL:(NSURL *)inVideoFileURL andAudioFileURL:(NSURL *)inAudioFileURL toMakeMovieWithCompletion:(CEMovieMakerCompletion)completion;
+-(void)_compilePrefixVideoFileURL:(NSURL *)inPrefixVideoFileURL  videoFromImagesFileURL:(NSURL *)inVideoFromImagesFileURL andAudioFileURL:(NSURL *)inAudioFileURL toMakeMovieWithCompletion:(CEMovieMakerCompletion)completion;
 {
 	AVMutableComposition *mixComposition = [AVMutableComposition composition];
-	NSURL *audio_inputFileUrl = inAudioFileURL;
-	NSURL *video_inputFileUrl = inVideoFileURL;
 	
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
 	NSString *documentsDirectory = [paths firstObject];
@@ -114,21 +112,56 @@
 	
 	CMTime nextClipStartTime = kCMTimeZero;
 	
-	AVURLAsset *videoAsset = [[AVURLAsset alloc]initWithURL:video_inputFileUrl options:nil];
-	CMTimeRange video_timeRange = CMTimeRangeMake(kCMTimeZero,videoAsset.duration);
-	AVMutableCompositionTrack *a_compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
-	[a_compositionVideoTrack insertTimeRange:video_timeRange ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] atTime:nextClipStartTime error:nil];
+	NSMutableArray *instructions = [NSMutableArray new];
 	
-	//nextClipStartTime = CMTimeAdd(nextClipStartTime, a_timeRange.duration);
+	// insert prefix video and audio
+	AVURLAsset *prefixVideoAsset = [[AVURLAsset alloc]initWithURL:inPrefixVideoFileURL options:nil];
+	CMTimeRange prefixVideoTimeRange = CMTimeRangeMake(kCMTimeZero, prefixVideoAsset.duration);
+	AVMutableCompositionTrack *compositionPrefixVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+	[compositionPrefixVideoTrack insertTimeRange:prefixVideoTimeRange ofTrack:[[prefixVideoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] atTime:nextClipStartTime error:nil];
 	
-	AVURLAsset *audioAsset = [[AVURLAsset alloc]initWithURL:audio_inputFileUrl options:nil];
-	CMTimeRange audio_timeRange = CMTimeRangeMake(kCMTimeZero, audioAsset.duration);
-	AVMutableCompositionTrack *b_compositionAudioTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
-	[b_compositionAudioTrack insertTimeRange:audio_timeRange ofTrack:[[audioAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0] atTime:nextClipStartTime error:nil];
+	AVMutableCompositionTrack *compositionPrefixAudioTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+	[compositionPrefixAudioTrack insertTimeRange:prefixVideoTimeRange ofTrack:[[prefixVideoAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0] atTime:nextClipStartTime error:nil];
+	
+	AVMutableVideoCompositionInstruction *prefixVideoCompositionInstruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
+	prefixVideoCompositionInstruction.timeRange = CMTimeRangeMake(kCMTimeZero, prefixVideoTimeRange.duration);
+	prefixVideoCompositionInstruction.layerInstructions = @[[AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:compositionPrefixVideoTrack]];
+	[instructions addObject:prefixVideoCompositionInstruction];
+	
+	nextClipStartTime = CMTimeAdd(nextClipStartTime, prefixVideoTimeRange.duration);
+	
+	// insert video from images and background audio, they must be the same duration
+	// Problem: the volume of each audio asset is not normalized
+	AVURLAsset *videoAsset = [[AVURLAsset alloc]initWithURL:inVideoFromImagesFileURL options:nil];
+	AVURLAsset *audioAsset = [[AVURLAsset alloc]initWithURL:inAudioFileURL options:nil];
+	CMTime minDuration = CMTimeMinimum(videoAsset.duration, audioAsset.duration);
+	CMTimeRange videoTimeRange = CMTimeRangeMake(kCMTimeZero, minDuration);
+	AVMutableCompositionTrack *compositionVideoFromImagesTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+	NSError *insertVideoFromImagesError = nil;
+	[compositionVideoFromImagesTrack insertTimeRange:videoTimeRange ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] atTime:nextClipStartTime error:&insertVideoFromImagesError];
+	
+	CMTimeRange audioTimeRange = CMTimeRangeMake(kCMTimeZero, minDuration);
+	AVMutableCompositionTrack *compositionBackgroundAudioTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+	NSError *insertBackgroundMusicError = nil;
+	[compositionBackgroundAudioTrack insertTimeRange:audioTimeRange ofTrack:[[audioAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0] atTime:nextClipStartTime error:&insertBackgroundMusicError];
+
+	AVMutableVideoCompositionInstruction *videoCompositionInstruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
+	videoCompositionInstruction.timeRange = CMTimeRangeMake(nextClipStartTime, minDuration);
+	videoCompositionInstruction.layerInstructions = @[[AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:compositionVideoFromImagesTrack]];
+	[instructions addObject:videoCompositionInstruction];
+
+	AVMutableVideoComposition *mutableVideoComposition = [AVMutableVideoComposition videoComposition];
+	mutableVideoComposition.instructions = instructions;
+	
+	// Set the frame duration to an appropriate value (i.e. 30 frames per second for video).
+	mutableVideoComposition.frameDuration = CMTimeMake(1, 30);
+	// Set the render size as the prefix video's size
+	mutableVideoComposition.renderSize = compositionPrefixVideoTrack.naturalSize;
 	
 	AVAssetExportSession *_assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPresetHighestQuality];
 	_assetExport.outputFileType = @"com.apple.quicktime-movie";
 	_assetExport.outputURL = outputFileUrl;
+	_assetExport.videoComposition = mutableVideoComposition;
 	
 	[_assetExport exportAsynchronouslyWithCompletionHandler:
 	 ^(void ) {

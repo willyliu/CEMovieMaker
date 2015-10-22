@@ -41,14 +41,15 @@
     
     NSDictionary *settings = [CEMovieMaker videoSettingsWithCodec:AVVideoCodecH264 withWidth:icon1.size.width andHeight:icon1.size.height];
     self.movieMaker = [[CEMovieMaker alloc] initWithSettings:settings];
-    for (NSInteger i = 0; i < 3; i++) {
+    for (NSInteger i = 0; i < 2; i++) {
         [frames addObject:icon1];
         [frames addObject:icon2];
         [frames addObject:icon3];
     }
 
 	NSURL *backgroundAudioFileURL = [[NSBundle mainBundle] URLForResource:@"backgroundMusic" withExtension:@"mov"];
-    [self.movieMaker createMovieFromImages:[frames copy] backgroundAudioFileURL:backgroundAudioFileURL withCompletion:^(NSURL *fileURL){
+	NSURL *prefixMovieFileURL = [[NSBundle mainBundle] URLForResource:@"prefixMovie" withExtension:@"mp4"];
+    [self.movieMaker createMovieFromPrefixMovieFileURL:prefixMovieFileURL images:[frames copy] backgroundAudioFileURL:backgroundAudioFileURL withCompletion:^(NSURL *fileURL){
 		[self saveToCameraRoll:fileURL];
         [self viewMovieAtUrl:fileURL];
     }];

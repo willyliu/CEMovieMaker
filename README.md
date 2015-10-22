@@ -29,7 +29,8 @@ Usage:
     }
 
 	NSURL *backgroundAudioFileURL = [[NSBundle mainBundle] URLForResource:@"backgroundMusic" withExtension:@"mov"];
-    [self.movieMaker createMovieFromImages:[frames copy] backgroundAudioFileURL:backgroundAudioFileURL withCompletion:^(NSURL *fileURL){
+	NSURL *prefixMovieFileURL = [[NSBundle mainBundle] URLForResource:@"prefixMovie" withExtension:@"mp4"];
+    [self.movieMaker createMovieFromPrefixMovieFileURL:prefixMovieFileURL images:[frames copy] backgroundAudioFileURL:backgroundAudioFileURL withCompletion:^(NSURL *fileURL){
 		[self saveToCameraRoll:fileURL];
         [self viewMovieAtUrl:fileURL];
     }];
