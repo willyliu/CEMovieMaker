@@ -15,6 +15,11 @@
 		321B3F4619CA08C50077829E /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 321B3F4419CA08C50077829E /* LaunchScreen.xib */; };
 		321B3F5219CA08C50077829E /* CEMovieMakerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 321B3F5119CA08C50077829E /* CEMovieMakerTests.m */; };
 		321B3F5D19CA08DE0077829E /* CEMovieMaker.m in Sources */ = {isa = PBXBuildFile; fileRef = 321B3F5C19CA08DE0077829E /* CEMovieMaker.m */; };
+		8B118BA01BD8BEE200898661 /* UIImage+Alpha.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B118B991BD8BEE200898661 /* UIImage+Alpha.m */; settings = {ASSET_TAGS = (); }; };
+		8B118BA11BD8BEE200898661 /* UIImage+ImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B118B9B1BD8BEE200898661 /* UIImage+ImageEffects.m */; settings = {ASSET_TAGS = (); }; };
+		8B118BA21BD8BEE200898661 /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B118B9D1BD8BEE200898661 /* UIImage+Resize.m */; settings = {ASSET_TAGS = (); }; };
+		8B118BA31BD8BEE200898661 /* UIImage+RoundedCorner.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B118B9F1BD8BEE200898661 /* UIImage+RoundedCorner.m */; settings = {ASSET_TAGS = (); }; };
+		8B118BA81BD8CDA400898661 /* backgroundMusic.mov in Resources */ = {isa = PBXBuildFile; fileRef = 8B118BA71BD8CDA400898661 /* backgroundMusic.mov */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,6 +48,15 @@
 		321B3F5119CA08C50077829E /* CEMovieMakerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CEMovieMakerTests.m; sourceTree = "<group>"; };
 		321B3F5B19CA08DE0077829E /* CEMovieMaker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CEMovieMaker.h; sourceTree = "<group>"; };
 		321B3F5C19CA08DE0077829E /* CEMovieMaker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CEMovieMaker.m; sourceTree = "<group>"; };
+		8B118B981BD8BEE200898661 /* UIImage+Alpha.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+Alpha.h"; path = "UIImageEffects/UIImage+Alpha.h"; sourceTree = "<group>"; };
+		8B118B991BD8BEE200898661 /* UIImage+Alpha.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+Alpha.m"; path = "UIImageEffects/UIImage+Alpha.m"; sourceTree = "<group>"; };
+		8B118B9A1BD8BEE200898661 /* UIImage+ImageEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+ImageEffects.h"; path = "UIImageEffects/UIImage+ImageEffects.h"; sourceTree = "<group>"; };
+		8B118B9B1BD8BEE200898661 /* UIImage+ImageEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+ImageEffects.m"; path = "UIImageEffects/UIImage+ImageEffects.m"; sourceTree = "<group>"; };
+		8B118B9C1BD8BEE200898661 /* UIImage+Resize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+Resize.h"; path = "UIImageEffects/UIImage+Resize.h"; sourceTree = "<group>"; };
+		8B118B9D1BD8BEE200898661 /* UIImage+Resize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+Resize.m"; path = "UIImageEffects/UIImage+Resize.m"; sourceTree = "<group>"; };
+		8B118B9E1BD8BEE200898661 /* UIImage+RoundedCorner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+RoundedCorner.h"; path = "UIImageEffects/UIImage+RoundedCorner.h"; sourceTree = "<group>"; };
+		8B118B9F1BD8BEE200898661 /* UIImage+RoundedCorner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+RoundedCorner.m"; path = "UIImageEffects/UIImage+RoundedCorner.m"; sourceTree = "<group>"; };
+		8B118BA71BD8CDA400898661 /* backgroundMusic.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; name = backgroundMusic.mov; path = Resources/backgroundMusic.mov; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +98,8 @@
 		321B3F3419CA08C50077829E /* CEMovieMaker */ = {
 			isa = PBXGroup;
 			children = (
+				8B118BA41BD8C66D00898661 /* Resources */,
+				8B118B961BD8BECB00898661 /* External Libraries */,
 				321B3F3919CA08C50077829E /* AppDelegate.h */,
 				321B3F3A19CA08C50077829E /* AppDelegate.m */,
 				321B3F3C19CA08C50077829E /* ViewController.h */,
@@ -122,6 +138,37 @@
 				321B3F5019CA08C50077829E /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		8B118B961BD8BECB00898661 /* External Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				8B118B971BD8BED400898661 /* UIImageEffects */,
+			);
+			name = "External Libraries";
+			sourceTree = "<group>";
+		};
+		8B118B971BD8BED400898661 /* UIImageEffects */ = {
+			isa = PBXGroup;
+			children = (
+				8B118B981BD8BEE200898661 /* UIImage+Alpha.h */,
+				8B118B991BD8BEE200898661 /* UIImage+Alpha.m */,
+				8B118B9A1BD8BEE200898661 /* UIImage+ImageEffects.h */,
+				8B118B9B1BD8BEE200898661 /* UIImage+ImageEffects.m */,
+				8B118B9C1BD8BEE200898661 /* UIImage+Resize.h */,
+				8B118B9D1BD8BEE200898661 /* UIImage+Resize.m */,
+				8B118B9E1BD8BEE200898661 /* UIImage+RoundedCorner.h */,
+				8B118B9F1BD8BEE200898661 /* UIImage+RoundedCorner.m */,
+			);
+			name = UIImageEffects;
+			sourceTree = "<group>";
+		};
+		8B118BA41BD8C66D00898661 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8B118BA71BD8CDA400898661 /* backgroundMusic.mov */,
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -173,6 +220,7 @@
 				TargetAttributes = {
 					321B3F3119CA08C50077829E = {
 						CreatedOnToolsVersion = 6.0;
+						DevelopmentTeam = GA2DMW4FFR;
 					};
 					321B3F4A19CA08C50077829E = {
 						CreatedOnToolsVersion = 6.0;
@@ -205,6 +253,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				321B3F4119CA08C50077829E /* Main.storyboard in Resources */,
+				8B118BA81BD8CDA400898661 /* backgroundMusic.mov in Resources */,
 				321B3F4619CA08C50077829E /* LaunchScreen.xib in Resources */,
 				321B3F4319CA08C50077829E /* Images.xcassets in Resources */,
 			);
@@ -224,10 +273,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8B118BA31BD8BEE200898661 /* UIImage+RoundedCorner.m in Sources */,
 				321B3F3E19CA08C50077829E /* ViewController.m in Sources */,
 				321B3F5D19CA08DE0077829E /* CEMovieMaker.m in Sources */,
+				8B118BA11BD8BEE200898661 /* UIImage+ImageEffects.m in Sources */,
 				321B3F3B19CA08C50077829E /* AppDelegate.m in Sources */,
+				8B118BA01BD8BEE200898661 /* UIImage+Alpha.m in Sources */,
 				321B3F3819CA08C50077829E /* main.m in Sources */,
+				8B118BA21BD8BEE200898661 /* UIImage+Resize.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -349,6 +402,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = CEMovieMaker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -359,6 +413,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = CEMovieMaker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -418,6 +473,7 @@
 				321B3F5719CA08C50077829E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		321B3F5819CA08C50077829E /* Build configuration list for PBXNativeTarget "CEMovieMakerTests" */ = {
 			isa = XCConfigurationList;
@@ -426,6 +482,7 @@
 				321B3F5A19CA08C50077829E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

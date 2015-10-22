@@ -28,8 +28,8 @@
             }
         }
         
-        _fileURL = [NSURL fileURLWithPath:tempPath];
-        _assetWriter = [[AVAssetWriter alloc] initWithURL:self.fileURL
+        _videoFromImagesFileURL = [NSURL fileURLWithPath:tempPath];
+        _assetWriter = [[AVAssetWriter alloc] initWithURL:self.videoFromImagesFileURL
                                                  fileType:AVFileTypeQuickTimeMovie error:&error];
         if (error) {
             NSLog(@"Error: %@", error.debugDescription);
@@ -53,7 +53,7 @@
     return self;
 }
 
-- (void)createMovieFromImages:(NSArray *)images withCompletion:(CEMovieMakerCompletion)completion;
+- (void)createMovieFromImages:(NSArray *)images backgroundAudioFileURL:(NSURL *)backgroundAudioFileURL withCompletion:(CEMovieMakerCompletion)completion
 {
     self.completionBlock = completion;
     
@@ -79,7 +79,7 @@
                     if (i == 0) {
                         [self.bufferAdapter appendPixelBuffer:sampleBuffer withPresentationTime:kCMTimeZero];
                     }else{
-                        CMTime lastTime = CMTimeMake(i-1, self.frameTime.timescale);
+                        CMTime lastTime = CMTimeMake((i-1) * self.frameTime.timescale * 3, self.frameTime.timescale);
                         CMTime presentTime = CMTimeAdd(lastTime, self.frameTime);
                         [self.bufferAdapter appendPixelBuffer:sampleBuffer withPresentationTime:presentTime];
                     }
@@ -91,13 +91,52 @@
         
         [self.writerInput markAsFinished];
         [self.assetWriter finishWritingWithCompletionHandler:^{
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.completionBlock(self.fileURL);
-            });
+			[self _compileVideoFileURL:self.videoFromImagesFileURL andAudioFileURL:backgroundAudioFileURL toMakeMovieWithCompletion:completion];
         }];
         
         CVPixelBufferPoolRelease(self.bufferAdapter.pixelBufferPool);
     }];
+}
+
+-(void)_compileVideoFileURL:(NSURL *)inVideoFileURL andAudioFileURL:(NSURL *)inAudioFileURL toMakeMovieWithCompletion:(CEMovieMakerCompletion)completion;
+{
+	AVMutableComposition *mixComposition = [AVMutableComposition composition];
+	NSURL *audio_inputFileUrl = inAudioFileURL;
+	NSURL *video_inputFileUrl = inVideoFileURL;
+	
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+	NSString *documentsDirectory = [paths firstObject];
+	NSString *outputFilePath = [documentsDirectory stringByAppendingFormat:@"/result.mov"];
+	NSURL *outputFileUrl = [NSURL fileURLWithPath:outputFilePath];
+	
+	if ([[NSFileManager defaultManager] fileExistsAtPath:outputFilePath])
+		[[NSFileManager defaultManager] removeItemAtPath:outputFilePath error:nil];
+	
+	CMTime nextClipStartTime = kCMTimeZero;
+	
+	AVURLAsset *videoAsset = [[AVURLAsset alloc]initWithURL:video_inputFileUrl options:nil];
+	CMTimeRange video_timeRange = CMTimeRangeMake(kCMTimeZero,videoAsset.duration);
+	AVMutableCompositionTrack *a_compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+	[a_compositionVideoTrack insertTimeRange:video_timeRange ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] atTime:nextClipStartTime error:nil];
+	
+	//nextClipStartTime = CMTimeAdd(nextClipStartTime, a_timeRange.duration);
+	
+	AVURLAsset *audioAsset = [[AVURLAsset alloc]initWithURL:audio_inputFileUrl options:nil];
+	CMTimeRange audio_timeRange = CMTimeRangeMake(kCMTimeZero, audioAsset.duration);
+	AVMutableCompositionTrack *b_compositionAudioTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+	[b_compositionAudioTrack insertTimeRange:audio_timeRange ofTrack:[[audioAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0] atTime:nextClipStartTime error:nil];
+	
+	AVAssetExportSession *_assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPresetHighestQuality];
+	_assetExport.outputFileType = @"com.apple.quicktime-movie";
+	_assetExport.outputURL = outputFileUrl;
+	
+	[_assetExport exportAsynchronouslyWithCompletionHandler:
+	 ^(void ) {
+		 dispatch_async(dispatch_get_main_queue(), ^{
+			 self.completionBlock(outputFileUrl);
+		 });
+	 }
+	 ];
 }
 
 - (CVPixelBufferRef)newPixelBufferFromCGImage:(CGImageRef)image

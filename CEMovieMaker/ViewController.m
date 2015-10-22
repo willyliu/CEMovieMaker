@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import "CEMovieMaker.h"
+#import "UIImage+Resize.h"
 @import MediaPlayer;
 
 @interface ViewController ()
@@ -34,19 +35,21 @@
 {
     NSMutableArray *frames = [[NSMutableArray alloc] init];
     
-    UIImage *icon1 = [UIImage imageNamed:@"icon1"];
-    UIImage *icon2 = [UIImage imageNamed:@"icon2"];
-    UIImage *icon3 = [UIImage imageNamed:@"icon3"];
+    UIImage *icon1 = [[UIImage imageNamed:@"icon1"] resizedImage:CGSizeMake(512.0, 512.0) interpolationQuality:kCGInterpolationHigh];
+    UIImage *icon2 = [[UIImage imageNamed:@"icon2"] resizedImage:CGSizeMake(512.0, 512.0) interpolationQuality:kCGInterpolationHigh];
+    UIImage *icon3 = [[UIImage imageNamed:@"icon3"] resizedImage:CGSizeMake(512.0, 512.0) interpolationQuality:kCGInterpolationHigh];
     
     NSDictionary *settings = [CEMovieMaker videoSettingsWithCodec:AVVideoCodecH264 withWidth:icon1.size.width andHeight:icon1.size.height];
     self.movieMaker = [[CEMovieMaker alloc] initWithSettings:settings];
-    for (NSInteger i = 0; i < 10; i++) {
+    for (NSInteger i = 0; i < 3; i++) {
         [frames addObject:icon1];
         [frames addObject:icon2];
         [frames addObject:icon3];
     }
 
-    [self.movieMaker createMovieFromImages:[frames copy] withCompletion:^(NSURL *fileURL){
+	NSURL *backgroundAudioFileURL = [[NSBundle mainBundle] URLForResource:@"backgroundMusic" withExtension:@"mov"];
+    [self.movieMaker createMovieFromImages:[frames copy] backgroundAudioFileURL:backgroundAudioFileURL withCompletion:^(NSURL *fileURL){
+		[self saveToCameraRoll:fileURL];
         [self viewMovieAtUrl:fileURL];
     }];
 }
@@ -59,6 +62,27 @@
     [playerController.moviePlayer prepareToPlay];
     [playerController.moviePlayer play];
     [self.view addSubview:playerController.view];
+}
+
+- (void)saveToCameraRoll:(NSURL *)srcURL
+{
+	NSLog(@"srcURL: %@", srcURL);
+	
+	ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+	ALAssetsLibraryWriteVideoCompletionBlock videoWriteCompletionBlock =
+	^(NSURL *newURL, NSError *error) {
+		if (error) {
+			NSLog( @"Error writing image with metadata to Photo Library: %@", error );
+		} else {
+			NSLog( @"Wrote image with metadata to Photo Library %@", newURL.absoluteString);
+		}
+	};
+	
+	if ([library videoAtPathIsCompatibleWithSavedPhotosAlbum:srcURL])
+	{
+		[library writeVideoAtPathToSavedPhotosAlbum:srcURL
+									completionBlock:videoWriteCompletionBlock];
+	}
 }
 
 - (void)didReceiveMemoryWarning {

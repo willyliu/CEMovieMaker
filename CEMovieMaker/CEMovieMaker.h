@@ -9,6 +9,7 @@
 @import AVFoundation;
 @import Foundation;
 @import UIKit;
+@import AssetsLibrary;
 
 typedef void(^CEMovieMakerCompletion)(NSURL *fileURL);
 
@@ -19,11 +20,11 @@ typedef void(^CEMovieMakerCompletion)(NSURL *fileURL);
 @property (nonatomic, strong) AVAssetWriterInputPixelBufferAdaptor *bufferAdapter;
 @property (nonatomic, strong) NSDictionary *videoSettings;
 @property (nonatomic, assign) CMTime frameTime;
-@property (nonatomic, strong) NSURL *fileURL;
+@property (nonatomic, strong) NSURL *videoFromImagesFileURL;
 @property (nonatomic, copy) CEMovieMakerCompletion completionBlock;
 
 - (instancetype)initWithSettings:(NSDictionary *)videoSettings;
-- (void)createMovieFromImages:(NSArray *)images withCompletion:(CEMovieMakerCompletion)completion;
+- (void)createMovieFromImages:(NSArray *)images backgroundAudioFileURL:(NSURL *)backgroundAudioFileURL withCompletion:(CEMovieMakerCompletion)completion;
 
 + (NSDictionary *)videoSettingsWithCodec:(NSString *)codec withWidth:(CGFloat)width andHeight:(CGFloat)height;
 
